@@ -323,6 +323,7 @@ reply(Reply, State) ->
     {reply, Reply, State, hibernate}.
 
 shutdown(Reason, State) ->
+    ?WSLOG(error, "shutdown Info: ~p", [Reason], State),
     stop({shutdown, Reason}, State).
 
 stop(Reason, State) ->
