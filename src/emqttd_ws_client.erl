@@ -251,9 +251,16 @@ handle_info({'EXIT', Pid, Reason}, State = #wsclient_state{proto_state = ProtoSt
                {noreply, State, hibernate}
     end;
 
+handle_info({inet_reply, _Sock, ok}, State) ->
+    {noreply, State};
+
+handle_info({inet_reply, _Sock, {error, Reason}}, State) ->
+    shutdown(Reason, State);
+
 handle_info(Info, State) ->
     ?WSLOG(error, "Unexpected Info: ~p", [Info], State),
     {noreply, State, hibernate}.
+
 
 terminate(Reason, #wsclient_state{proto_state = ProtoState, keepalive = KeepAlive}) ->
     emqttd_keepalive:cancel(KeepAlive),
